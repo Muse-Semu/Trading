@@ -1,4 +1,4 @@
-package com.ayg.treading;
+package com.ayg.trading;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

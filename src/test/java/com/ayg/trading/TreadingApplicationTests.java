@@ -1,4 +1,4 @@
-package com.ayg.treading;
+package com.ayg.trading;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

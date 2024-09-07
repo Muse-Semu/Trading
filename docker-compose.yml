@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:latest
+    container_name: trade_postgres
+    restart: always
+    ports:
+      - "1002:5432"  # Map host port 5505 to container port 5432
+    environment:
+      POSTGRES_DB: trade      # Set the name of the default database
+      POSTGRES_USER: admin        # Set the PostgreSQL user
+      POSTGRES_PASSWORD: admin  # Set the password for the PostgreSQL user
+    volumes:
+      - trade_postgres:/var/lib/postgresql/data  # Persist PostgreSQL data
+    networks:
+      - postgres_network
+
+volumes:
+
+  trade_postgres:
+    driver: local
+
+networks:
+  postgres_network:
+    driver: bridge

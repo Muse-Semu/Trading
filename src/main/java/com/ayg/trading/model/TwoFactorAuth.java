@@ -9,5 +9,6 @@ public class TwoFactorAuth {
 
     private boolean isEnabled = false;
     private VERIFICATION_TYPE verificationType;
+    private String sendTo;
 
 }

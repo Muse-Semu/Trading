@@ -1,16 +1,16 @@
 package com.ayg.trading.controller;
 
+import com.ayg.trading.config.JwtConstant;
+import com.ayg.trading.model.TwoFactorOTP;
 import com.ayg.trading.model.User;
-import com.ayg.trading.repository.UserRepository;
-import com.ayg.trading.service.implemetations.UserServiceImplementation;
+import com.ayg.trading.response.AuthResponse;
+import com.ayg.trading.service.implemetations.TwoFactorOtpServiceImplemetation;
+import com.ayg.trading.service.interfaces.TwoFactorOtpService;
 import com.ayg.trading.service.interfaces.UserService;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
@@ -18,10 +18,12 @@ public class UserController {
 
 
     private final UserService userService;
+    private final TwoFactorOtpService twoFactorOtpService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, TwoFactorOtpServiceImplemetation twoFactorOtpServiceImplemetation, TwoFactorOtpService twoFactorOtpService) {
         this.userService = userService;
+        this.twoFactorOtpService = twoFactorOtpService;
     }
 
 
@@ -31,8 +33,29 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@RequestBody User user) {
+    public ResponseEntity<Object> login(@RequestBody User user) throws MessagingException {
         return userService.login(user);
+    }
+
+    public ResponseEntity<AuthResponse> verifySigningOtp(@PathVariable String otp, @RequestParam String id) throws MessagingException {
+        TwoFactorOTP twoFactorOTP = twoFactorOtpService.findById(id);
+        if(twoFactorOtpService.verifyTwoFactorOtp(twoFactorOTP,otp)){
+            AuthResponse authResponse = new AuthResponse();
+            authResponse.setMessage("2FA verified");
+            authResponse.setStatus(true);
+            authResponse.setTwoFactorAuthEnabled(true);
+            authResponse.setJwt(twoFactorOTP.getJwt());
+
+          return ResponseEntity.ok(authResponse);
+        }
+
+        throw new MessagingException("2FA verification failed");
+
+    }
+
+    public ResponseEntity<User> getUserProfile(@RequestHeader(JwtConstant.HEADER_STRING) String jwt)  {
+        User user = userService.findUserProfileByJwtToken(jwt) ;
+        return ResponseEntity.ok(user);
     }
 
 }

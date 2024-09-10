@@ -4,6 +4,7 @@ import com.ayg.trading.domain.USER_ROLE;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NonNull;
 
 @Data
 @Entity
@@ -16,6 +17,8 @@ public class User {
     private String username;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
+
+    @Column(unique = true)
     private String email;
     private String phone;
     private USER_ROLE role = USER_ROLE.ROLE_CUSTOMER;

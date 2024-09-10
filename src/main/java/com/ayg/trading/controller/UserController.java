@@ -2,6 +2,8 @@ package com.ayg.trading.controller;
 
 import com.ayg.trading.model.User;
 import com.ayg.trading.repository.UserRepository;
+import com.ayg.trading.service.implemetations.UserServiceImplementation;
+import com.ayg.trading.service.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,24 +17,22 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
 
-    private UserRepository userRepository;
+    private final UserService userService;
 
     @Autowired
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
+
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody User user) {
-        User newUser = new User();
-        newUser.setUsername(user.getUsername());
-        newUser.setPassword(user.getPassword());
-        newUser.setEmail(user.getEmail());
-        newUser.setPhone(user.getPhone());
-        newUser.setFullName(user.getFullName());
-
-
-        User savedUser = userRepository.save(newUser);
-        return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+    public ResponseEntity<Object> register(@RequestBody User user) {
+       return userService.createUser(user);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<Object> login(@RequestBody User user) {
+        return userService.login(user);
+    }
+
 }

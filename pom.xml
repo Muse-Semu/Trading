@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.ayg</groupId>
-	<artifactId>treading</artifactId>
+	<artifactId>trading</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>treading</name>
 	<description>Demo project for Spring Boot</description>

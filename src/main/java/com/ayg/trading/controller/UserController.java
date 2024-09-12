@@ -1,6 +1,7 @@
 package com.ayg.trading.controller;
 
 import com.ayg.trading.config.JwtConstant;
+import com.ayg.trading.domain.VERIFICATION_TYPE;
 import com.ayg.trading.model.TwoFactorOTP;
 import com.ayg.trading.model.User;
 import com.ayg.trading.response.AuthResponse;
@@ -13,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("api/user")
 public class UserController {
 
 
@@ -37,6 +38,7 @@ public class UserController {
         return userService.login(user);
     }
 
+    @PostMapping("/two-factor/")
     public ResponseEntity<AuthResponse> verifySigningOtp(@PathVariable String otp, @RequestParam String id) throws MessagingException {
         TwoFactorOTP twoFactorOTP = twoFactorOtpService.findById(id);
         if(twoFactorOtpService.verifyTwoFactorOtp(twoFactorOTP,otp)){
@@ -53,9 +55,26 @@ public class UserController {
 
     }
 
+    @GetMapping("/profile/otp/{otp}")
     public ResponseEntity<User> getUserProfile(@RequestHeader(JwtConstant.HEADER_STRING) String jwt)  {
         User user = userService.findUserProfileByJwtToken(jwt) ;
         return ResponseEntity.ok(user);
     }
+
+
+    @PostMapping("/verification/{verificationType}/send-otp")
+    public ResponseEntity<User> sendVerificationOtpCode(
+            @RequestHeader(JwtConstant.HEADER_STRING) String jwt,
+            @PathVariable VERIFICATION_TYPE verificationType)  {
+        User user = userService.findUserProfileByJwtToken(jwt) ;
+        return ResponseEntity.ok(user);
+    }
+
+    @PatchMapping("/enable-two-factor/verify-otp/{otp}")
+    public ResponseEntity<User> getTwoFactorAuthentication(@RequestHeader(JwtConstant.HEADER_STRING) String jwt)  {
+        User user = userService.findUserProfileByJwtToken(jwt) ;
+        return ResponseEntity.ok(user);
+    }
+
 
 }
